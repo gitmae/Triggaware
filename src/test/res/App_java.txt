@@ -1,0 +1,39 @@
+input
+
+IT001E00317280	18.12.2019
+IT001E00324610	10.12.2019
+IT001E00805156	28.11.2019
+IT001E02065263	31.10.2019
+
+String[] array = [
+[pod, YM, DD],
+[pod, YM, DD],
+[pod, YM, DD],
+[pod, YM, DD],
+]
+
+String pod;
+String YM;
+String DD;
+
+********************
+shift F6 - rename con refactor
+********************
+output
+
+ Innesco i = new Innesco();
+ i.setPod
+
+SELECT * FROM CONS_READING       WHERE (MEAS_YM, POD, MEAS_DD) IN (('202001','IT001E34773812','31'), ('202002','IT001E34773812','01')) AND VALID_TO>NOW()
+SELECT * FROM CONS_LOAD_PROFILE  WHERE (MEAS_YM, POD, MEAS_DD) IN (('201907','IT001E02383999','17'), ('201907','IT001E02383999','18')) AND VALID_TO>NOW()
+
+********
+documentazione stringbuilder
+********
+
+https://www.geeksforgeeks.org/system-lineseparator-method-in-java-with-examples/
+
+********
+Git ignore
+https://www.mrwebmaster.it/programmazione/ignorare-file-gitignore_12470.html
+https://gist.github.com/octocat/9257657

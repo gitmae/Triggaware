@@ -54,6 +54,7 @@ public class Main extends Application {
         vBoxPulsanti.getChildren().addAll(Arrays.asList((Node[]) new Control[]{eventTypeCB, eventTypeRNR, buttonTrigga, buttonExit}));
         box1.getChildren().addAll(Arrays.asList((Node[]) new Region[]{userTextAreaInput, vBoxPulsanti, userTextAreaOutput}));
 
+        /* nuovo bottone  */
         buttonTrigga.setOnAction(event -> {
             if (eventTypeCB.getValue() == null) {
                 userTextAreaOutput.setText("pirla valorizza il combo");

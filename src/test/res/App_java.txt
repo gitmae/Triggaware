@@ -37,3 +37,6 @@ https://www.geeksforgeeks.org/system-lineseparator-method-in-java-with-examples/
 Git ignore
 https://www.mrwebmaster.it/programmazione/ignorare-file-gitignore_12470.html
 https://gist.github.com/octocat/9257657
+********
+ -upsert spostamento curve / ripristino
+ -preparare test

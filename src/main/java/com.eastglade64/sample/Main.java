@@ -7,6 +7,7 @@ import com.eastglade64.transformation.RTriggerTransformation;
 
 import java.util.Arrays;
 
+import com.eastglade64.transformation.TransformationFactory;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
@@ -46,21 +47,22 @@ public class Main extends Application {
         vBoxPulsanti.setPadding(new Insets(50.0D, 5.0D, 50.0D, 5.0D));
 
         ComboBox<EventType> eventTypeCB = new ComboBox<>(FXCollections.observableArrayList(EventType.values()));
-        ComboBox<TriggerFamily> eventTypeRNR = new ComboBox<>(FXCollections.observableArrayList(TriggerFamily.values()));
 
         Button buttonTrigga = new Button("Trigga");
         Button buttonMassiva = new Button("Massiva");
         Button buttonExit = new Button("Exit");
 
-        vBoxPulsanti.getChildren().addAll(Arrays.asList((Node[]) new Control[]{eventTypeCB, eventTypeRNR, buttonTrigga, buttonMassiva, buttonExit}));
-        box1.getChildren().addAll(Arrays.asList((Node[]) new Region[]{userTextAreaInput, vBoxPulsanti, userTextAreaOutput}));
+        vBoxPulsanti.getChildren().addAll(Arrays.asList(eventTypeCB, buttonTrigga, buttonMassiva, buttonExit));
+        box1.getChildren().addAll(Arrays.asList(userTextAreaInput, vBoxPulsanti, userTextAreaOutput));
 
         buttonTrigga.setOnAction(event -> {
             if (eventTypeCB.getValue() == null) {
                 userTextAreaOutput.setText("pirla valorizza il combo");
             } else {
                 try {
-                    String res = new RTriggerTransformation(eventTypeCB.getValue()).transform(userTextAreaInput.getText());
+                    String res = TransformationFactory
+                            .forEventType(eventTypeCB.getValue())
+                            .transform(userTextAreaInput.getText());
                     userTextAreaOutput.setText(res);
                 } catch (TransformationException e) {
                     e.printStackTrace();
@@ -83,11 +85,7 @@ public class Main extends Application {
             }
         });
 
-        buttonExit.setOnAction(new EventHandler<ActionEvent>() {
-            public void handle(ActionEvent event) {
-                primaryStage.close();
-            }
-        });
+        buttonExit.setOnAction(e -> primaryStage.close());
 
         primaryStage.setScene(new Scene(box1));
         primaryStage.show();

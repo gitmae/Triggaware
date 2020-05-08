@@ -8,6 +8,12 @@
 *.so
 target
 
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
 # Packages #
 ############
 # it's better to unpack these files and commit the raw source
@@ -21,12 +27,6 @@ target
 *.tar
 *.zip
 
-# Logs and databases #
-######################
-*.log
-*.sql
-*.sqlite
-
 # OS generated files #
 ######################
 .DS_Store
@@ -36,6 +36,7 @@ target
 .Trashes
 ehthumbs.db
 Thumbs.db
+desktop.ini
 
 # IDE files #
 #############
@@ -58,8 +59,3 @@ composer.lock
 *.ipr
 
 pom.properties
-
-# Windows files #
-#################
-Thumbs.db
-desktop.ini

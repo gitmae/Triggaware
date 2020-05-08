@@ -49,13 +49,27 @@ public class Main extends Application {
         ComboBox<TriggerFamily> eventTypeRNR = new ComboBox<>(FXCollections.observableArrayList(TriggerFamily.values()));
 
         Button buttonTrigga = new Button("Trigga");
+        Button buttonMassiva = new Button("Massiva");
         Button buttonExit = new Button("Exit");
 
-        vBoxPulsanti.getChildren().addAll(Arrays.asList((Node[]) new Control[]{eventTypeCB, eventTypeRNR, buttonTrigga, buttonExit}));
+        vBoxPulsanti.getChildren().addAll(Arrays.asList((Node[]) new Control[]{eventTypeCB, eventTypeRNR, buttonTrigga, buttonMassiva, buttonExit}));
         box1.getChildren().addAll(Arrays.asList((Node[]) new Region[]{userTextAreaInput, vBoxPulsanti, userTextAreaOutput}));
 
-        /* nuovo bottone  */
         buttonTrigga.setOnAction(event -> {
+            if (eventTypeCB.getValue() == null) {
+                userTextAreaOutput.setText("pirla valorizza il combo");
+            } else {
+                try {
+                    String res = new RTriggerTransformation(eventTypeCB.getValue()).transform(userTextAreaInput.getText());
+                    userTextAreaOutput.setText(res);
+                } catch (TransformationException e) {
+                    e.printStackTrace();
+                    userTextAreaOutput.setText(e.getMessage());
+                }
+            }
+        });
+
+        buttonMassiva.setOnAction(event -> {
             if (eventTypeCB.getValue() == null) {
                 userTextAreaOutput.setText("pirla valorizza il combo");
             } else {

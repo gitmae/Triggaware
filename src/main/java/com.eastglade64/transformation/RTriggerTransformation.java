@@ -2,84 +2,59 @@ package com.eastglade64.transformation;
 
 import com.eastglade64.model.EventType;
 import com.eastglade64.model.exception.TransformationException;
+import com.eastglade64.model.trigger.TriggerPLP;
+import com.eastglade64.transformation.aggregation.TriggerPLPAggregator;
+import com.eastglade64.transformation.parsing.MeasuresParser;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeFormatterBuilder;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.IntStream;
 
 public class RTriggerTransformation implements Transformation {
 
+
+  private static final MeasuresParser MEASURES_PARSER = new MeasuresParser();
+  private static final TriggerPLPAggregator TRIGGER_AGGREGATOR = new TriggerPLPAggregator();
+
+  private static final DateTimeFormatter TRIGGER_ID_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddkkmmssSS");
+  private static final DateTimeFormatter LAST_UPD_TS_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss.000");
+
+    private final LocalDateTime now = LocalDateTime.now();
+  private final String lastUpdateTs = now.format(LAST_UPD_TS_FORMAT);
   private final EventType eventType;
-  
+
   public RTriggerTransformation(EventType eventType) {
     this.eventType = eventType;
   }
   
   public String transform(String input) throws TransformationException {
-    StringBuilder outputBlock = new StringBuilder();
-
-    try {
-      String[] blocchi = input.replaceAll("\t", "|").split("\\*");
-      for (int i = 0; i < blocchi.length; i++)
-        outputBlock.append(composizioneInnesco(blocchi[i], i));
-    } catch (Exception e) {
-        throw new TransformationException("Input non valido", e);
-    }
-
-    return outputBlock.toString();
+      try {
+          List<TriggerPLP> triggers = TRIGGER_AGGREGATOR.aggregate(MEASURES_PARSER.parse(input));
+          return IntStream.range(0, triggers.size())
+                  .mapToObj(ix -> composizioneInnesco(triggers.get(ix), ix))
+                  .collect(Collectors.joining());
+      } catch (Exception e) {
+          throw new TransformationException("Error in transform", e);
+      }
   }
 
-  private String composizioneInnesco(String blocco, int seq) {
-    DateTimeFormatter triggerIdFormat = new DateTimeFormatterBuilder()
-            .appendPattern("yyyy")
-            .appendPattern("MM")
-            .appendPattern("dd")
-            .appendPattern("kk")
-            .appendPattern("mm")
-            .appendPattern("ss")
-            .appendPattern("SS")
-            .toFormatter();
+  private String composizioneInnesco(TriggerPLP trigger, int seq) {
 
-    String trigger_id = LocalDateTime.now().format(triggerIdFormat) +
+    String triggerId = now.format(TRIGGER_ID_FORMAT) +
             String.format("%03d", seq) +
             ":02:04:08:16:F64abcd32mpx0l0EXP";
 
-    DateTimeFormatter lastUpdTsFormat = new DateTimeFormatterBuilder()
-            .appendPattern("yyyy")
-            .appendLiteral("-")
-            .appendPattern("MM")
-            .appendLiteral("-")
-            .appendPattern("dd")
-            .appendLiteral(" ")
-            .appendPattern("kk")
-            .appendLiteral(":")
-            .appendPattern("mm")
-            .appendLiteral(":")
-            .appendPattern("ss")
-            .appendLiteral(".000")
-            .toFormatter();
-
-    String lastUpdateTs = LocalDateTime.now().format(lastUpdTsFormat);
-    String[] righeBlocco = blocco.split("\n");
-
-    String rSx = righeBlocco[0].replaceAll("\n", "");
-    String rDx = righeBlocco[1].replaceAll("\n", "");
-    String cA1 = righeBlocco[2].replaceAll("\n", "");
-    String cR1 = righeBlocco[3].replaceAll("\n", "");
-
     return "INSERT INTO settlement.event_change_trigger " +
             "(event_type, process_destination, trigger_id, last_update_ts, process_source, \"trigger\", status)\n" +
-            "VALUES('" +
-            this.eventType.getLabel() +
-            "', 'SPLITTING', '" +
-            trigger_id +
-            "', '" +
-            lastUpdateTs +
-            "', 'NCVP', " +
-            "'{\"rdSxK\":\"" + rSx +
-            "\", \"rdDxK\":\"" + rDx +
-            "\", \"lpK\":[\"" + cA1 +
-            "\", \"" + cR1 +
-            "\"]}', 'NEW');\n";
+            "VALUES("+
+            "'" + this.eventType.getLabel() + "', " +
+            "'SPLITTING', "+
+            "'" + triggerId + "', " +
+            "'" + lastUpdateTs + "', " +
+            "'NCVP', " +
+            "'" + trigger.toJson() + "', " +
+            "'NEW');\n";
   }
 }

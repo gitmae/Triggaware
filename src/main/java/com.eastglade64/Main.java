@@ -1,33 +1,25 @@
-package com.eastglade64.sample;
+package com.eastglade64;
 
 import com.eastglade64.model.EventType;
-import com.eastglade64.model.TriggerFamily;
 import com.eastglade64.model.exception.TransformationException;
 import com.eastglade64.transformation.RTriggerTransformation;
-
-import java.util.Arrays;
-
 import com.eastglade64.transformation.TransformationFactory;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
-import javafx.event.ActionEvent;
-import javafx.event.Event;
-import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Control;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+import java.util.Arrays;
+
 public class Main extends Application {
-    public void start(final Stage primaryStage) throws Exception {
+    public void start(final Stage primaryStage) {
         primaryStage.setTitle("Triggaware");
         HBox box1 = new HBox();
 

@@ -1,4 +1,4 @@
-package com.eastglade64.model;
+package com.eastglade64.model.trigger;
 
 public enum TriggerFamily {
   R("R"),

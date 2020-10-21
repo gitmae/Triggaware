@@ -41,9 +41,9 @@ public class TriggerPLPAggregator implements TriggerAggregator<TriggerPLP> {
                           currentTrigger.setDx(registro);
                           triggers.add(currentTrigger.build());
                           currentTrigger = TriggerPLP.builder();
-                      } else {
-                          currentTrigger.setSx(registro);
                       }
+                      // we do this in either case
+                      currentTrigger.setSx(registro);
                   },
                   curva -> currentTrigger.addCurva(curva)
           );

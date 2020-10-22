@@ -2,7 +2,6 @@ package com.eastglade64.transformation.aggregation;
 
 import com.eastglade64.model.measure.Measure;
 import com.eastglade64.model.trigger.TriggerPLP;
-import com.eastglade64.util.CollectionUtils;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -17,11 +16,11 @@ public class TriggerPLPAggregator implements TriggerAggregator<TriggerPLP> {
                 .collect(Collectors.groupingBy(Measure::getPod))
                 .values()
                 .stream()
-                .flatMap(this::aggregateAdjacentMeasures)
+                .flatMap(this::aggregatePodMeasures)
                 .collect(Collectors.toList());
     }
 
-    private Stream<TriggerPLP> aggregateAdjacentMeasures(List<Measure> measures) {
+    private Stream<TriggerPLP> aggregatePodMeasures(List<Measure> measures) {
         TriggerPLPAccumulator accumulator = new TriggerPLPAccumulator();
         new TreeSet<>(measures).forEach(accumulator::add);
         return accumulator.getTriggers().stream();

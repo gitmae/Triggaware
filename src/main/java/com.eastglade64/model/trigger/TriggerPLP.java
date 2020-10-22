@@ -2,10 +2,10 @@ package com.eastglade64.model.trigger;
 
 import com.eastglade64.model.measure.Curva;
 import com.eastglade64.model.measure.Registro;
-import com.eastglade64.util.CollectionUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class TriggerPLP extends Trigger {
 
@@ -27,7 +27,10 @@ public class TriggerPLP extends Trigger {
     public String toJson() {
         return "{\"rdSxK\":\"" + sx + "\", " +
                 "\"rdDxK\":\"" + dx + "\", " +
-                "\"lpK\":[\"" + CollectionUtils.mkString(",", curvaList) + "\"]}";
+                "\"lpK\":" +
+                curvaList.stream().map(c -> "\""+c+"\"")
+                        .collect(Collectors.joining(",","[", "]")) +
+                "}";
     }
 
     /**

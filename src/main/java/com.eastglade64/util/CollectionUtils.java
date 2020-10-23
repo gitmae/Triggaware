@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.function.Function;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class CollectionUtils {
 
@@ -19,7 +20,11 @@ public class CollectionUtils {
 
 
     public static String mkString(String separator, Collection<?> collection) {
-        return collection.stream()
+        return mkString(separator, collection.stream());
+    }
+
+    public static String mkString(String separator, Stream<?> stream) {
+        return stream
                 .map(Object::toString)
                 .collect(Collectors.joining(separator));
     }

@@ -2,6 +2,7 @@ package com.eastglade64.transformation;
 
 import com.eastglade64.model.EventType;
 import com.eastglade64.model.exception.TransformationException;
+import com.eastglade64.model.measure.Curva;
 import com.eastglade64.model.trigger.TriggerPLP;
 import com.eastglade64.model.util.CollectionPair;
 import com.eastglade64.transformation.aggregation.TriggerPLPAggregator;
@@ -49,14 +50,22 @@ public class RTriggerTransformation implements Transformation {
                   .map(TriggerPLP::toJson)
                   .collect(Collectors.joining("\n"));
 
-          String info = ok.size() + " inneschi creati.\n" +
-                  (ko.size() > 0 ? ko.size() +
+          String okInfo = ok.size() + " inneschi creati.\n" +
+                  ok.stream()
+                  .map(t -> t.getSx().getTime() +
+                          " -> " +
+                          t.getDx().getTime() +
+                          " with " +
+                          CollectionUtils.mkString(",", t.getCurvaList().stream().map(Curva::getTime))
+                  ).collect(Collectors.joining("\n"));
+
+          String koInfo = (ko.size() > 0 ? ko.size() +
                           " inneschi non creati perchè risulterebbero senza curve:\n" + koJson : "");
 
 
           return TransformationResult.builder()
                   .withOutput(okJson)
-                  .withInfo(info)
+                  .withInfo(koInfo + okInfo)
                   .build();
       } catch (Exception e) {
           throw new TransformationException("Error in transform", e);

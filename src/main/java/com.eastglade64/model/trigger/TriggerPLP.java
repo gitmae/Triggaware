@@ -19,6 +19,18 @@ public class TriggerPLP extends Trigger {
         this.curvaList = curvaList;
     }
 
+    public Registro getSx() {
+        return sx;
+    }
+
+    public Registro getDx() {
+        return dx;
+    }
+
+    public List<Curva> getCurvaList() {
+        return curvaList;
+    }
+
     public boolean hasCurva() {
         return !this.curvaList.isEmpty();
     }

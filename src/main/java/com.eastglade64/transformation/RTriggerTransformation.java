@@ -10,6 +10,7 @@ import com.eastglade64.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
@@ -37,8 +38,8 @@ public class RTriggerTransformation implements Transformation {
 
           CollectionPair<TriggerPLP, List<TriggerPLP>> cp = CollectionUtils.span(triggers, TriggerPLP::hasCurva);
 
-          List<TriggerPLP> ok = cp.getTrue();
-          List<TriggerPLP> ko = cp.getFalse();
+          List<TriggerPLP> ok = cp.getTrue() != null ? cp.getTrue() : new ArrayList<>();
+          List<TriggerPLP> ko = cp.getFalse() != null ? cp.getFalse() : new ArrayList<>();
 
           String okJson = IntStream.range(0, ok.size())
                   .mapToObj(ix -> composizioneInnesco(ok.get(ix), ix))

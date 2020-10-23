@@ -2,15 +2,19 @@ package com.eastglade64;
 
 import com.eastglade64.model.EventType;
 import com.eastglade64.model.exception.TransformationException;
+import com.eastglade64.transformation.MassivaTriggerTransformation;
 import com.eastglade64.transformation.RTriggerTransformation;
 import com.eastglade64.transformation.TransformationFactory;
+import com.eastglade64.transformation.TransformationResult;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.geometry.Insets;
+import javafx.geometry.Orientation;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
@@ -26,13 +30,24 @@ public class Main extends Application {
         box1.setPadding(new Insets(10.0D, 10.0D, 10.0D, 10.0D));
         TextArea userTextAreaInput = new TextArea();
 
-        userTextAreaInput.setMinWidth(500.0D);
-        userTextAreaInput.setMinHeight(800.0D);
+        userTextAreaInput.setPrefWidth(600);
+        userTextAreaInput.setPrefHeight(600);
 
         TextArea userTextAreaOutput = new TextArea();
 
-        userTextAreaOutput.setMinWidth(800.0D);
-        userTextAreaOutput.setMinHeight(800.0D);
+        userTextAreaOutput.setPrefWidth(600);
+        userTextAreaOutput.setPrefHeight(600);
+
+        TextArea infoBox = new TextArea();
+
+        infoBox.setPrefWidth(600);
+        infoBox.setPrefHeight(50);
+        //infoBox.setMinHeight(30);
+
+        SplitPane outputBox = new SplitPane();
+        outputBox.setOrientation(Orientation.VERTICAL);
+        outputBox.getItems().addAll(infoBox, userTextAreaOutput);
+        outputBox.setDividerPosition(0, .2);
 
         VBox vBoxPulsanti = new VBox(50.0D);
         vBoxPulsanti.setAlignment(Pos.CENTER);
@@ -45,34 +60,38 @@ public class Main extends Application {
         Button buttonExit = new Button("Exit");
 
         vBoxPulsanti.getChildren().addAll(Arrays.asList(eventTypeCB, buttonTrigga, buttonMassiva, buttonExit));
-        box1.getChildren().addAll(Arrays.asList(userTextAreaInput, vBoxPulsanti, userTextAreaOutput));
+        box1.getChildren().addAll(Arrays.asList(userTextAreaInput, vBoxPulsanti, outputBox));
 
         buttonTrigga.setOnAction(event -> {
             if (eventTypeCB.getValue() == null) {
-                userTextAreaOutput.setText("pirla valorizza il combo");
+                infoBox.setText("pirla valorizza il combo");
             } else {
                 try {
-                    String res = TransformationFactory
+                    TransformationResult res = TransformationFactory
                             .forEventType(eventTypeCB.getValue())
                             .transform(userTextAreaInput.getText());
-                    userTextAreaOutput.setText(res);
+
+                    userTextAreaOutput.setText(res.getOutput());
+                    infoBox.setText(res.getInfo());
                 } catch (TransformationException e) {
                     e.printStackTrace();
-                    userTextAreaOutput.setText(e.getMessage());
+                    infoBox.setText(e.getMessage());
                 }
             }
         });
 
         buttonMassiva.setOnAction(event -> {
             if (eventTypeCB.getValue() == null) {
-                userTextAreaOutput.setText("pirla valorizza il combo");
+                infoBox.setText("pirla valorizza il combo");
             } else {
                 try {
-                    String res = new RTriggerTransformation(eventTypeCB.getValue()).transform(userTextAreaInput.getText());
-                    userTextAreaOutput.setText(res);
+                    TransformationResult res = new MassivaTriggerTransformation(eventTypeCB.getValue())
+                            .transform(userTextAreaInput.getText());
+                    userTextAreaOutput.setText(res.getOutput());
+                    infoBox.setText(res.getInfo());
                 } catch (TransformationException e) {
                     e.printStackTrace();
-                    userTextAreaOutput.setText(e.getMessage());
+                    infoBox.setText(e.getMessage());
                 }
             }
         });

@@ -3,8 +3,10 @@ package com.eastglade64.transformation;
 import com.eastglade64.model.EventType;
 import com.eastglade64.model.exception.TransformationException;
 import com.eastglade64.model.trigger.TriggerPLP;
+import com.eastglade64.model.util.CollectionPair;
 import com.eastglade64.transformation.aggregation.TriggerPLPAggregator;
 import com.eastglade64.transformation.parsing.MeasuresParser;
+import com.eastglade64.util.CollectionUtils;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -21,7 +23,7 @@ public class RTriggerTransformation implements Transformation {
   private static final DateTimeFormatter TRIGGER_ID_FORMAT = DateTimeFormatter.ofPattern("yyyyMMddkkmmssSS");
   private static final DateTimeFormatter LAST_UPD_TS_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd kk:mm:ss.000");
 
-    private final LocalDateTime now = LocalDateTime.now();
+  private final LocalDateTime now = LocalDateTime.now();
   private final String lastUpdateTs = now.format(LAST_UPD_TS_FORMAT);
   private final EventType eventType;
 
@@ -29,12 +31,32 @@ public class RTriggerTransformation implements Transformation {
     this.eventType = eventType;
   }
   
-  public String transform(String input) throws TransformationException {
+  public TransformationResult transform(String input) throws TransformationException {
       try {
           List<TriggerPLP> triggers = TRIGGER_AGGREGATOR.aggregate(MEASURES_PARSER.parse(input));
-          return IntStream.range(0, triggers.size())
-                  .mapToObj(ix -> composizioneInnesco(triggers.get(ix), ix))
+
+          CollectionPair<TriggerPLP, List<TriggerPLP>> cp = CollectionUtils.span(triggers, TriggerPLP::hasCurva);
+
+          List<TriggerPLP> ok = cp.getTrue();
+          List<TriggerPLP> ko = cp.getFalse();
+
+          String okJson = IntStream.range(0, ok.size())
+                  .mapToObj(ix -> composizioneInnesco(ok.get(ix), ix))
                   .collect(Collectors.joining());
+
+          String koJson = ko.stream()
+                  .map(TriggerPLP::toJson)
+                  .collect(Collectors.joining("\n"));
+
+          String info = ok.size() + " inneschi creati.\n" +
+                  (ko.size() > 0 ? ko.size() +
+                          " inneschi non creati perchè risulterebbero senza curve:\n" + koJson : "");
+
+
+          return TransformationResult.builder()
+                  .withOutput(okJson)
+                  .withInfo(info)
+                  .build();
       } catch (Exception e) {
           throw new TransformationException("Error in transform", e);
       }

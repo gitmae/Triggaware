@@ -10,20 +10,9 @@ public class MassivaTriggerTransformation implements Transformation{
         this.eventType = eventType;
     }
 
-    public String transform(String input) throws TransformationException {
-        String outputBlock = "";
-
-   /*     try {
-            input = input.replaceAll("\t", "|");
-            String[] ArrayBlocchi = input.split("\\*");
-            for (int i = 0; i < ArrayBlocchi.length; i++)
-                outputBlock = outputBlock + composizioneInnesco(ArrayBlocchi[i], i);
-        } catch (Exception e) {
-            TransformationException excp = new TransformationException("Input non valido");
-            excp.initCause(e);
-            throw excp;
-        }*/
-
-        return outputBlock;
+    public TransformationResult transform(String input) throws TransformationException {
+        return TransformationResult.builder()
+                .withOutput("Not implemented")
+                .build();
     }
 }

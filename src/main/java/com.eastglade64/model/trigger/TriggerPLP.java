@@ -19,6 +19,10 @@ public class TriggerPLP extends Trigger {
         this.curvaList = curvaList;
     }
 
+    public boolean hasCurva() {
+        return !this.curvaList.isEmpty();
+    }
+
     public static TriggerPLPBuilder builder() {
         return new TriggerPLPBuilder();
     }
@@ -43,7 +47,7 @@ public class TriggerPLP extends Trigger {
     public static final class TriggerPLPBuilder {
         private Registro sx;
         private Registro dx;
-        private List<Curva> curvaList = new ArrayList<>();
+        private final List<Curva> curvaList = new ArrayList<>();
 
         public void setSx(Registro sx) {
             this.sx = sx;
